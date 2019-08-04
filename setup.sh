@@ -1,5 +1,6 @@
 #!/bin/env bash
 
+# install for ubuntu
 . ./config
 
 now_path=`pwd`
@@ -25,7 +26,7 @@ function show_help()
     echo -e "1 Install Vundle(vim plugin) to ~/.vim/bundle/vundle/\n"
     echo -e "2 Copy config files to corresponding directory\n"
     echo -e "  including .aliascfg .gitconfig .vimrc .zshrc .tmux.conf\n"
-    echo -e "3 Download some packages using yum\n"
+    echo -e "3 Download some packages using apt-get\n"
     echo -e "4 Your username is ${lc}${cred}${username}${rc}\n"
 }
 
@@ -103,73 +104,12 @@ function add_include_to_bash_profile
 
 function install_package
 {
-    # epel
-    echo "check epel-release..."
-    rpm -qa|grep epel-release > /dev/null
-    if [ $? -ne 0 ]; then
-        echo "epel-release is not found, to install..."
-        sudo yum install -y epel-release
-        if [ $? -ne 0 ]; then
-            echo -e "${lc}${cred}Install epel-release failed${rc}"
-            exit -1
-        fi
-        echo -e "${lc}${cgreen}Install epel-release success${rc}"
-        sudo yum makecache
-    fi
-    # git
-    echo "check git..."
-    which git &> /dev/null
-    if [ $? -ne 0 ]; then
-        echo "git is not found, to install..."
-        sudo yum install -y git
-        if [ $? -ne 0 ]; then
-            echo -e "${lc}${cred}Install git failed${rc}"
-            exit -1
-        fi
-        echo -e "${lc}${cgreen}Install git success"
-    fi
-    # vim
-    echo "check vim..."
-    which vim &> /dev/null
-    if [ $? -ne 0 ]; then
-        echo "vim is not found, to install..."
-        sudo yum install -y vim
-        if [ $? -ne 0 ]; then
-            echo -e "${lc}${cred}Install vim failed${rc}"
-            exit -1
-        fi
-        echo -e "${lc}${cgreen}Install vim success${rc}"
-    fi
-    # gcc-c++
-    echo "check gcc-c++..."
-    which g++ &> /dev/null
-    if [ $? -ne 0 ]; then
-        echo "g++ is not found, to install..."
-        sudo yum install -y gcc-c++
-        if [ $? -ne 0 ]; then
-            echo -e "${lc}${cred}Install gcc-c++ failed${rc}"
-            exit -1
-        fi
-        echo -e "${lc}${cgreen}Install gcc-c++ success${rc}"
-    fi
-    # golang
-    echo "check golang..."
-    which go &> /dev/null
-    if [ $? -ne 0 ]; then
-        echo "golang is not found, to install..."
-        sudo yum install -y golang
-        if [ $? -ne 0 ]; then
-            echo -e "${lc}${cred}Install golang failed${rc}"
-            exit -1
-        fi
-        echo -e "${lc}${cgreen}Install golang success${rc}"
-    fi 
     # ctags
     echo "check ctags..."
     which ctags &> /dev/null
     if [ $? -ne 0 ]; then
         echo "ctags is not found, to install..."
-        sudo yum install -y ctags 
+        sudo apt-get install -y ctags 
         if [ $? -ne 0 ]; then
             echo -e "${lc}${cred}Install ctags failed${rc}"
             exit -1
@@ -181,7 +121,7 @@ function install_package
     which zsh &> /dev/null
     if [ $? -ne 0 ]; then
         echo "zsh is not found, to install..."
-        sudo yum install -y zsh
+        sudo apt-get install -y zsh
         if [ $? -ne 0 ]; then
             echo -e "${lc}${cred}Install zsh failed${rc}"
             exit -1
@@ -193,7 +133,7 @@ function install_package
     rpm -qa|grep autojump-zsh >/dev/null
     if [ $? -ne 0 ]; then
         echo "autojump-zsh is not found, to install..."
-        sudo yum install -y autojump-zsh
+        sudo apt-get install -y autojump
         if [ $? -ne 0 ]; then
             echo -e "${lc}${cred}Install autojump-zsh failed${rc}"
             exit -1
@@ -205,7 +145,7 @@ function install_package
     which tmux &> /dev/null
     if [ $? -ne 0 ]; then
         echo "tmux is not found, to install..."
-        sudo yum install -y tmux
+        sudo apt-get install -y tmux
         if [ $? -ne 0 ]; then
             echo -e "${lc}${cred}Install tmux failed${rc}"
             exit -1
@@ -217,7 +157,7 @@ function install_package
     which tree &> /dev/null
     if [ $? -ne 0 ]; then
         echo "tree is not found, to install..."
-        sudo yum install -y tree
+        sudo apt-get install -y tree
         if [ $? -ne 0 ]; then
             echo -e "${lc}${cred}Install tree failed${rc}"
             exit -1
@@ -229,7 +169,7 @@ function install_package
     which wget &> /dev/null
     if [ $? -ne 0 ]; then
         echo "wget is not found, to install..."
-        sudo yum install -y wget
+        sudo apt-get install -y wget
         if [ $? -ne 0 ]; then
             echo -e "${lc}${cred}Install wget failed${rc}"
             exit -1
@@ -241,7 +181,7 @@ function install_package
     which ag &> /dev/null
     if [ $? -ne 0 ]; then
         echo "ag(the_silver_searcher) is not found, to install..."
-        sudo yum install -y the_silver_searcher
+        sudo apt-get install -y silversearcher-ag
         if [ $? -ne 0 ]; then
             echo -e "${lc}${cred}Install ag failed${rc}"
             exit -1
@@ -252,15 +192,6 @@ function install_package
 
 function create_dir()
 {
-    # git_fatedier
-    if [ ! -d "${HOME}/local/git_fatedier" ]; then
-        mkdir -p ${HOME}/local/git_fatedier
-        if [ $? -ne 0 ]; then
-            echo -e "${lc}${cred}mkdir -p ${HOME}/local/git_fatedier failed${rc}"
-        else
-            echo -e "${lc}${cgreen}mkdir -p ${HOME}/local/git_fatedier success${rc}"
-        fi
-    fi
     # golang directory
     if [ ! -d "${HOME}/go_projects/src" ]; then
         mkdir -p ${HOME}/go_projects/src
@@ -283,30 +214,6 @@ function create_dir()
 
 function download()
 {
-    cd ${HOME}/local/git_fatedier
-    # fatedier-tools
-    if [ ! -d "${HOME}/local/git_fatedier/fatedier-tools" ]; then
-        echo 'start download fatedier-tools...'
-        git clone https://github.com/fatedier/fatedier-tools.git
-        if [ $? -ne 0 ]; then
-            echo -e "${lc}${cred}Download fatedier-tools failed${rc}"
-        else
-            echo -e "${lc}${cgreen}Download fatedier-tools success${rc}"
-        fi
-        # compile some tools
-        cd ${HOME}/local/git_fatedier/fatedier-tools/astyle && make
-    fi
-    cd ${HOME}/local/git_fatedier
-    # dot_file
-    if [ ! -d "${HOME}/local/git_fatedier/dot_file" ]; then
-        echo 'start download dot_file...'
-        git clone https://github.com/fatedier/dot_file.git
-        if [ $? -ne 0 ]; then
-            echo -e "${lc}${cred}Download dot_file failed${rc}"
-        else
-            echo -e "${lc}${cgreen}Download dot_file success${rc}"
-        fi
-    fi
     # oh-my-zsh
     if [ ! -d "${HOME}/.oh-my-zsh" ]; then
         echo 'start download oh-my-zsh...'
@@ -337,14 +244,6 @@ function download()
     fi
 }
 
-function extra()
-{
-    # gvm
-    if [ ! -d "${HOME}/.gvm" ]; then
-        zsh < <(curl -s -S -L https://raw.githubusercontent.com/fatedier/gvm/self/binscripts/gvm-installer)
-        echo -e "${lc}${cgreen}Download gvm over${rc}"
-    fi
-}
 
 function use_zsh()
 {
@@ -360,10 +259,8 @@ read m_start_flag
 
 case ${m_start_flag} in
 y|Y)
-    # 通过yum安装所需的包
+    # 通过apt-get安装所需的包
     install_package
-    # 创建需要用到的目录
-    create_dir
     # 下载相关文件或项目
     download
     # 将配置文件放到指定目录下
@@ -375,8 +272,6 @@ y|Y)
     else
         use_zsh
     fi
-
-    extra
 
     # vim相关
     check_dir_vundle
